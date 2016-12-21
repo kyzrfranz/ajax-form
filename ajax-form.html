@@ -185,7 +185,9 @@ Custom property | Description | Default
 
                 for (var i = 0; i < inputFields.length; i++) {
                     var field = inputFields[i];
-                    valid = field.validate();
+                    if(field.validate !== undefined) {
+                        valid = field.validate();
+                    }
                     var empty = field.value === '';
 
                     if (field.getAttribute('required') !== null) {
@@ -214,6 +216,8 @@ Custom property | Description | Default
                     this._body['cookieEnabled'] = navigator.cookieEnabled;
                     this._body['screenResolution'] = screen.width + 'x' + screen.height;
                 }
+
+                console.log(this._body);
                 this.$.ajax.generateRequest();
             },
             _calculateHeight: function () {
@@ -236,10 +240,11 @@ Custom property | Description | Default
                         }
 
                         if (_this.method.toLowerCase() === 'get') {
-                            this._params[field.name] = value;
+                            this._params[field.name || field.id] = value;
                         }
+                                
                         else if (_this.method.toLowerCase() === 'post') {
-                            this._body[field.name] = value;
+                            this._body[field.name || field.id] = value;
                         }
                     }
                 }.bind(this));
@@ -252,6 +257,9 @@ Custom property | Description | Default
                     inputs = Array.prototype.slice.call(inputs);
                     inp = inp.concat(inputs);
 
+                    var formInputs = elem.querySelectorAll('.form-input');
+                    formInputs = Array.prototype.slice.call(formInputs);
+                    inp = inp.concat(formInputs);
 
                     var goldInputs = elem.querySelectorAll('gold-email-input');
                     goldInputs = Array.prototype.slice.call(goldInputs);
