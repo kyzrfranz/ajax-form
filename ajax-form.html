@@ -13,6 +13,7 @@ Currenty you can add paper-input, gold-email-input and paper-checkbox
 
 You pass input fields within something resonding to a 'form' content selector.
 Additionally you may pass a success message as a 'success' content selector.
+You can also add *any* input element by simply adding a class named 'form-input' (must provide a value to be sent)
 
 Example:
 
@@ -242,7 +243,7 @@ Custom property | Description | Default
                         if (_this.method.toLowerCase() === 'get') {
                             this._params[field.name || field.id] = value;
                         }
-                                
+
                         else if (_this.method.toLowerCase() === 'post') {
                             this._body[field.name || field.id] = value;
                         }
