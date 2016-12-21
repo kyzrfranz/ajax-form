@@ -1,0 +1,31 @@
+{
+  "name": "ajax-form",
+  "description": "A package consisting of input slots, iron-ajax and neon-animated-pages to display, validate and send form data",
+  "main": "ajax-form.html",
+  "version": "0.3.1",
+  "authors": [
+    "Thomas Hieber <thomas.hieber@gmail.com>"
+  ],
+  "license": "GPL 3.0",
+  "keywords": [
+    "polymer",
+    "web-components"
+  ],
+  "ignore": [
+    "**/.*",
+    "bower_components"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0",
+    "iron-ajax": "PolymerElements/iron-ajax#^1.4.3",
+    "neon-animation": "PolymerElements/neon-animation#^1.2.4",
+    "paper-input": "PolymerElements/paper-input#^1.1.22",
+    "paper-spinner": "PolymerElements/paper-spinner#^1.2.1"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  }
+}

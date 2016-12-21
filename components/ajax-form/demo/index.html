@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>ajax-form demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../ajax-form.html">
+    <link rel="import" href="../../paper-input/paper-input.html">
+
+    <style is="custom-style" include="demo-pages-shared-styles">
+    </style>
+</head>
+<body>
+<div class="vertical-section-container centered">
+    <h3>Basic ajax-form demo</h3>
+    <demo-snippet>
+        <template>
+            <ajax-form url="https://httpbin.org/post">
+                <div class="form">
+                    <div class="checkResult">
+                        <input type="text" class="form-input" id="inputClassic"></input>
+                        <paper-input class="input" label="Name" id="inputName" name="inputName"></paper-input>
+                        <paper-input required="" id="inpPhone" name="inpPhone" minlength="8" maxlength="15" label="Mobile" auto-validate="" pattern="[+]?[0-9]*" error-message="Please enter a valid mobile number"></paper-input>
+                    </div>
+                </div>
+                <div class="success">
+                    Success!
+                </div>
+            </ajax-form>
+            <div class="buttons layout horizontal">
+                <paper-button id="sendForm" raised onclick="processForm()">Send</paper-button>
+            </div>
+
+            <script>
+                function processForm(){
+                    var form = document.querySelector('ajax-form');
+                    if(form.validate()){
+                        form.send();
+                    }
+                }
+            </script>
+        </template>
+    </demo-snippet>
+</div>
+</body>
+</html>

@@ -1,0 +1,41 @@
+{
+  "name": "ajax-form",
+  "description": "A package consisting of input slots, iron-ajax and neon-animated-pages to display, validate and send form data",
+  "main": "ajax-form.html",
+  "authors": [
+    "Thomas Hieber <thomas.hieber@gmail.com>"
+  ],
+  "license": "GPL 3.0",
+  "keywords": [
+    "polymer",
+    "web-components"
+  ],
+  "ignore": [
+    "**/.*",
+    "bower_components"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0",
+    "iron-ajax": "PolymerElements/iron-ajax#^1.4.3",
+    "neon-animation": "PolymerElements/neon-animation#^1.2.4",
+    "paper-input": "PolymerElements/paper-input#^1.1.22",
+    "paper-spinner": "PolymerElements/paper-spinner#^1.2.1"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  },
+  "homepage": "https://github.com/kyzrfranz/ajax-form",
+  "_release": "a0809c8a09",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "a0809c8a09d541e4c553a669c73410e2d7245a0f"
+  },
+  "_source": "https://github.com/kyzrfranz/ajax-form.git",
+  "_target": "master",
+  "_originalSource": "kyzrfranz/ajax-form",
+  "_direct": true
+}

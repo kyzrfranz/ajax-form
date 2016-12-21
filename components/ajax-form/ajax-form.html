@@ -1,0 +1,293 @@
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel='import' href='../neon-animation/animations/fade-in-animation.html'>
+<link rel='import' href='../neon-animation/animations/fade-out-animation.html'>
+<link rel='import' href='../neon-animation/neon-animated-pages.html'>
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-spinner/paper-spinner.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+<!--
+
+`ajax-form-button` encapsules an iron-ajax and can take input fields in the content slot to automatically validate and send them via ajax-request.
+Currenty you can add paper-input, gold-email-input and paper-checkbox
+
+You pass input fields within something resonding to a 'form' content selector.
+Additionally you may pass a success message as a 'success' content selector.
+You can also add *any* input element by simply adding a class named 'form-input' (must provide a value to be sent)
+
+Example:
+
+    <ajax-form url="https://httpbin.org/post">
+        <div class="form">
+            <paper-input class="input" label="Name" id="inputName" name="inputName"></paper-input>
+        </div>
+        <div class="success">
+            Success!
+        </div>
+    </ajax-form>
+
+### Styling
+
+<strong>Note:</strong> you should always provide a height for the form in order to have the neon-animated-pages not clip the form
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--ajax-form-width` | Form height | `200px`
+`--ajax-form-height` |Form width | `100%`
+
+@demo demo/index.html
+-->
+
+<dom-module id="ajax-form">
+    <template>
+        <style includes="iron-flex">
+            :host {
+                display: inline-block;
+                width: var(--ajax-form-width, 100%);
+                height: var(--ajax-form-height, 200px);
+            }
+
+            neon-animated-pages {
+                display: inline-block;
+                width: 100%;
+            }
+
+            paper-spinner {
+                margin: 0px auto;
+            }
+
+            .container {
+                @apply(--layout-horizontal);
+                @apply(--layout-center);
+                @apply(--layout-horizontal);
+                @apply(--layout-center-justified);
+                height: 100%;
+                text-align: center;
+            }
+
+            .loading,
+            .error {
+                @apply(--layout-horizontal);
+                @apply(--layout-center);
+                display: inline-block;
+                text-align: center;
+                width:100%;
+            }
+
+            neon-animated-pages {
+                height: 100%;
+            }
+        </style>
+        <iron-ajax id="ajax" url="[[url]]"
+                   content-type="application/json"
+                   body='[[_body]]'
+                   params='[[_params]]'
+                   method="[[method]]"
+                   handle-as="json"
+                   on-response="_handleResponse"
+                   on-error="handleError"
+                   debounce-duration="300">
+        </iron-ajax>
+
+        <neon-animated-pages id="nap" selected="[[selected]]" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
+            <neon-animatable id="form">
+                <content select=".form" id="content"></content>
+            </neon-animatable>
+            <neon-animatable>
+                <div class="container loading">
+                    <paper-spinner alt="Sending.." active></paper-spinner>
+                </div>
+            </neon-animatable>
+            <neon-animatable>
+                <content select=".success"></content>
+            </neon-animatable>
+            <neon-animatable>
+                <div class="container error">
+                    <div>
+                        <p>[[errMessage]]</p>
+                        <p>
+                            <paper-button class="flex accColorBG whitefont" raised on-tap="back">Back</paper-button>
+                        </p>
+                    </div>
+                </div>
+            </neon-animatable>
+        </neon-animated-pages>
+
+    </template>
+    <script>
+        Polymer({
+            is: 'ajax-form',
+
+
+            /**
+             * Fired when a response is received.
+             * Contains the iron-ajax response
+             *
+             * @event ajax-form-response
+             * @event iron-ajax-response
+             */
+
+            properties: {
+
+                /**
+                 * The URL target of the request.
+                 */
+                url: {
+                    type: 'String'
+                },
+                _params: {
+                    type: Object
+                },
+                _body: {
+                    type: Object
+                },
+                /**
+                 * Set true if you would like to add user metadata in the request.
+                 * The following metadata ar currently being tracked and added to the request:
+                 *
+                 * - pageUrl
+                 * - userAgent
+                 * - cookieEnabled
+                 * - language
+                 * - screenResolution
+                 */
+                trackUserMeta: {
+                    type: Boolean
+                },
+                /**
+                 * HTTP method (default is <strong>post</strong>)
+                 */
+                method:{
+                    type: String,
+                    value: 'post'
+                }
+            },
+            ready: function () {
+                this.selected = 0;
+                this.entryAnimation = 'fade-in-animation';
+                this.exitAnimation = 'fade-out-animation';
+
+                this._calculateHeight();
+            },
+            attached: function () {
+                var inputFields = this._getInputFields();
+                for (var i = 0; i < inputFields.length; i++) {
+                    var field = inputFields[i];
+                }
+            },
+            /**
+             * Validate your form data.
+             * If you add the <emph>required</emph> attribute tou your input fields, it will be handled as well
+             * @returns {boolean}
+             */
+            validate: function () {
+                var valid = true;
+                var inputFields = this._getInputFields();
+
+                for (var i = 0; i < inputFields.length; i++) {
+                    var field = inputFields[i];
+                    if(field.validate !== undefined) {
+                        valid = field.validate();
+                    }
+                    var empty = field.value === '';
+
+                    if (field.getAttribute('required') !== null) {
+                        valid = valid && !empty;
+                    }
+
+                    if (!valid) {
+                        this.errMessage = field.getAttribute('error-message');
+                        break;
+                    }
+                }
+
+                return valid;
+            },
+            /**
+             * Send form data
+             */
+            send: function () {
+                this.selected = 1;
+                this._params = this._getParams();
+
+                if(this.trackUserMeta) {
+                    this._body['pageURL'] = document.location.href;
+                    this._body['userAgent'] = navigator.userAgent;
+                    this._body['language'] = navigator.language;
+                    this._body['cookieEnabled'] = navigator.cookieEnabled;
+                    this._body['screenResolution'] = screen.width + 'x' + screen.height;
+                }
+
+                console.log(this._body);
+                this.$.ajax.generateRequest();
+            },
+            _calculateHeight: function () {
+                this.async(function () {
+                    this.$.nap.style.height = this.offsetHeight + 'px';
+                }.bind(this), 50);
+            },
+            _back: function () {
+                this.selected = 0;
+            },
+            _getParams: function () {
+                this._params = {};
+                this._body = {};
+                var _this = this;
+                Array.prototype.forEach.call(this.input, function (field) {
+                    if (field.name !== undefined) {
+                        var value = field.value;
+                        if (field.nodeName.toLowerCase() == 'paper-checkbox') {
+                            value = field.checked;
+                        }
+
+                        if (_this.method.toLowerCase() === 'get') {
+                            this._params[field.name || field.id] = value;
+                        }
+
+                        else if (_this.method.toLowerCase() === 'post') {
+                            this._body[field.name || field.id] = value;
+                        }
+                    }
+                }.bind(this));
+            },
+            _getInputFields: function () {
+                var ccn = this.getContentChildren('#content');
+                var inp = [];
+                Array.prototype.forEach.call(ccn, function (elem) {
+                    var inputs = elem.querySelectorAll('paper-input');
+                    inputs = Array.prototype.slice.call(inputs);
+                    inp = inp.concat(inputs);
+
+                    var formInputs = elem.querySelectorAll('.form-input');
+                    formInputs = Array.prototype.slice.call(formInputs);
+                    inp = inp.concat(formInputs);
+
+                    var goldInputs = elem.querySelectorAll('gold-email-input');
+                    goldInputs = Array.prototype.slice.call(goldInputs);
+                    inp = inp.concat(goldInputs);
+
+                    var checkboxes = elem.querySelectorAll('paper-checkbox');
+                    checkboxes = Array.prototype.slice.call(checkboxes);
+                    inp = inp.concat(checkboxes);
+                });
+
+                this.input = inp;
+                return inp;
+            },
+            _handleResponse: function (data) {
+                this.fire('ajax-form-response', {detail: data});
+                if (data.detail.statusText === 'OK') {
+                    this.selected = 2;
+                }
+                else {
+                    this.errMessage = data.detail.statusText;
+                    this.selected = 3;
+                }
+            },
+            _handleError: function () {
+                this.errMessage = 'There has been an error - please try again';
+                this.selected = 3;
+            }
+        });
+    </script>
+</dom-module>
