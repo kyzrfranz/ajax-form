@@ -85,7 +85,7 @@ Custom property | Description | Default
                    method="[[method]]"
                    handle-as="json"
                    on-response="_handleResponse"
-                   on-error="_handleError"
+                   on-error="	"
                    debounce-duration="300">
         </iron-ajax>
 
@@ -106,7 +106,7 @@ Custom property | Description | Default
                     <div>
                         <p>[[errMessage]]</p>
                         <p>
-                            <paper-button class="flex accColorBG whitefont" raised on-tap="back">Back</paper-button>
+                            <paper-button class="flex accColorBG whitefont" raised on-tap="_back">Back</paper-button>
                         </p>
                     </div>
                 </div>
