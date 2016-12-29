@@ -277,7 +277,7 @@ Custom property | Description | Default
                 return inp;
             },
             _handleResponse: function (e, detail) {
-                this.fire('ajax-form-response', detail.xhr.response);
+                this.fire('ajax-form-response', detail);
                 if (detail.status >= 200 && detail.status < 300 ) {
                     this.selected = 2;
                 }
