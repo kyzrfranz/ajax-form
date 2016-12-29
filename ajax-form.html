@@ -128,6 +128,10 @@ Custom property | Description | Default
              */
 
             properties: {
+				debug: {
+					type: Boolean,
+					value: false
+				},
                 /**
                  * The URL target of the request.
                  */
@@ -217,7 +221,9 @@ Custom property | Description | Default
                     this._body['screenResolution'] = screen.width + 'x' + screen.height;
                 }
 
-                console.log(this._body);
+				if(debug) {
+					console.log(this._body);
+				}
                 this.$.ajax.generateRequest();
             },
             _calculateHeight: function () {
