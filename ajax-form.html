@@ -128,10 +128,6 @@ Custom property | Description | Default
              */
 
             properties: {
-                ajaxResponse: {
-                    type: Object,
-                    notify: true
-                },
                 /**
                  * The URL target of the request.
                  */
@@ -279,7 +275,6 @@ Custom property | Description | Default
             },
             _handleResponse: function (data) {
                 this.fire('ajax-form-response', {detail: data});
-                this.set('ajaxResponse', {detail: data});
                 if (data.detail.status >= 200 && data.detail.status < 300 ) {
                     this.selected = 2;
                 }
