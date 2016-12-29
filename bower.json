@@ -2,7 +2,7 @@
   "name": "ajax-form",
   "description": "A package consisting of input slots, iron-ajax and neon-animated-pages to display, validate and send form data",
   "main": "ajax-form.html",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "authors": [
     "Thomas Hieber <thomas.hieber@gmail.com>"
   ],
