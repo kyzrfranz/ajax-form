@@ -239,7 +239,7 @@ Custom property | Description | Default
                 this._body = {};
                 var _this = this;
                 Array.prototype.forEach.call(this.input, function (field) {
-                    if (field.name !== undefined) {
+                    if (field.name !== undefined && field.name != "") {
                         var value = field.value;
                         if (field.nodeName.toLowerCase() == 'paper-checkbox') {
                             value = field.checked;
@@ -250,8 +250,11 @@ Custom property | Description | Default
                         }
 
                         else if (_this.method.toLowerCase() === 'post') {
-                            this._body[field.name || field.id] = value;
+                            this._body[field.id || field.id] = value;
                         }
+                    }
+                    else{
+                        console.warn(field.nodeName + ' is missing required attribute "name" - not included in form');
                     }
                 }.bind(this));
             },
@@ -279,13 +282,13 @@ Custom property | Description | Default
                 this.input = inp;
                 return inp;
             },
-            _handleResponse: function (data) {
-                this.fire('ajax-form-response', {detail: data});
-                if (data.detail.status >= 200 && data.detail.status < 300 ) {
+            _handleResponse: function (e, detail) {
+                this.fire('ajax-form-response', detail);
+                if (detail.status >= 200 && detail.status < 300 ) {
                     this.selected = 2;
                 }
                 else {
-                    this.errMessage = data.detail.statusText;
+                    this.errMessage = detail.statusText;
                     this.selected = 3;
                 }
             },
