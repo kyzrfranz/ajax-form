@@ -40,6 +40,9 @@
             <script>
                 function processForm(){
                     var form = document.querySelector('ajax-form');
+                    form.addEventListener('ajax-form-response', function (e){
+                       console.log(e.detail);
+                    });
                     if(form.validate()){
                         form.send();
                     }
