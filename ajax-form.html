@@ -234,7 +234,7 @@ Custom property | Description | Default
                 this._body = {};
                 var _this = this;
                 Array.prototype.forEach.call(this.input, function (field) {
-                    if (field.name !== undefined) {
+                    if (field.name !== undefined && field.name != "") {
                         var value = field.value;
                         if (field.nodeName.toLowerCase() == 'paper-checkbox') {
                             value = field.checked;
@@ -245,8 +245,11 @@ Custom property | Description | Default
                         }
 
                         else if (_this.method.toLowerCase() === 'post') {
-                            this._body[field.name || field.id] = value;
+                            this._body[field.id || field.id] = value;
                         }
+                    }
+                    else{
+                        console.warn(field.nodeName + ' is missing required attribute "name" - not included in form');
                     }
                 }.bind(this));
             },
@@ -274,8 +277,9 @@ Custom property | Description | Default
                 this.input = inp;
                 return inp;
             },
-            _handleResponse: function (data) {
-                this.fire('ajax-form-response', {detail: data});
+            _handleResponse: function (e, detail) {
+                console.log(detail.xhr);
+                this.fire('ajax-form-response', {detail: detail.xhr.response});
                 if (data.detail.statusText === 'OK') {
                     this.selected = 2;
                 }
