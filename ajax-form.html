@@ -71,7 +71,7 @@ Custom property | Description | Default
                 @apply(--layout-center);
                 display: inline-block;
                 text-align: center;
-                width:100%;
+                width: 100%;
             }
 
             neon-animated-pages {
@@ -85,7 +85,7 @@ Custom property | Description | Default
                    method="[[method]]"
                    handle-as="json"
                    on-response="_handleResponse"
-                   on-error="handleError"
+                   on-error="_handleError"
                    debounce-duration="300">
         </iron-ajax>
 
@@ -106,7 +106,7 @@ Custom property | Description | Default
                     <div>
                         <p>[[errMessage]]</p>
                         <p>
-                            <paper-button class="flex accColorBG whitefont" raised on-tap="back">Back</paper-button>
+                            <paper-button class="flex accColorBG whitefont" raised on-tap="_back">Back</paper-button>
                         </p>
                     </div>
                 </div>
@@ -128,7 +128,10 @@ Custom property | Description | Default
              */
 
             properties: {
-
+                ajaxResponse: {
+                    type: Object,
+                    notify: true
+                },
                 /**
                  * The URL target of the request.
                  */
@@ -157,7 +160,7 @@ Custom property | Description | Default
                 /**
                  * HTTP method (default is <strong>post</strong>)
                  */
-                method:{
+                method: {
                     type: String,
                     value: 'post'
                 }
@@ -186,7 +189,7 @@ Custom property | Description | Default
 
                 for (var i = 0; i < inputFields.length; i++) {
                     var field = inputFields[i];
-                    if(field.validate !== undefined) {
+                    if (field.validate !== undefined) {
                         valid = field.validate();
                     }
                     var empty = field.value === '';
@@ -210,7 +213,7 @@ Custom property | Description | Default
                 this.selected = 1;
                 this._params = this._getParams();
 
-                if(this.trackUserMeta) {
+                if (this.trackUserMeta) {
                     this._body['pageURL'] = document.location.href;
                     this._body['userAgent'] = navigator.userAgent;
                     this._body['language'] = navigator.language;
@@ -276,7 +279,8 @@ Custom property | Description | Default
             },
             _handleResponse: function (data) {
                 this.fire('ajax-form-response', {detail: data});
-                if (data.detail.statusText === 'OK') {
+                this.set('ajaxResponse', {detail: data});
+                if (data.detail.status >= 200 && data.detail.status < 300 ) {
                     this.selected = 2;
                 }
                 else {
