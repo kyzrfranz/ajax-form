@@ -43,8 +43,8 @@ Custom property | Description | Default
         <style includes="iron-flex">
             :host {
                 display: inline-block;
-                width: var(--ajax-form-width, 100%);
-                height: var(--ajax-form-height, 200px);
+                /*width: var(--ajax-form-width, 100%);*/
+                /*height: var(--ajax-form-height, 200px);*/
             }
 
             neon-animated-pages {
@@ -74,8 +74,8 @@ Custom property | Description | Default
                 width: 100%;
             }
 
-            neon-animated-pages {
-                height: 100%;
+            neon-animated-pages .iron-selected {
+                position: static;
             }
         </style>
         <iron-ajax id="ajax" url="[[url]]"
@@ -159,20 +159,26 @@ Custom property | Description | Default
                 method: {
                     type: String,
                     value: 'post'
-                }
+                },
             },
             ready: function () {
                 this.selected = 0;
                 this.entryAnimation = 'fade-in-animation';
                 this.exitAnimation = 'fade-out-animation';
-
-                this._calculateHeight();
             },
             attached: function () {
                 var inputFields = this._getInputFields();
                 for (var i = 0; i < inputFields.length; i++) {
                     var field = inputFields[i];
                 }
+            },
+            /**
+             * Reset the form.
+             */
+            reset: function () {
+                this.selected = 0;
+                this._params = {};
+                this._body = {};
             },
             /**
              * Validate your form data.
@@ -216,14 +222,7 @@ Custom property | Description | Default
                     this._body['cookieEnabled'] = navigator.cookieEnabled;
                     this._body['screenResolution'] = screen.width + 'x' + screen.height;
                 }
-
-                console.log(this._body);
                 this.$.ajax.generateRequest();
-            },
-            _calculateHeight: function () {
-                this.async(function () {
-                    this.$.nap.style.height = this.offsetHeight + 'px';
-                }.bind(this), 50);
             },
             _back: function () {
                 this.selected = 0;
@@ -247,7 +246,7 @@ Custom property | Description | Default
                             this._body[field.id || field.id] = value;
                         }
                     }
-                    else{
+                    else {
                         console.warn(field.nodeName + ' is missing required attribute "name" - not included in form');
                     }
                 }.bind(this));
@@ -278,7 +277,7 @@ Custom property | Description | Default
             },
             _handleResponse: function (e, detail) {
                 this.fire('ajax-form-response', detail);
-                if (detail.status >= 200 && detail.status < 300 ) {
+                if (detail.status >= 200 && detail.status < 300) {
                     this.selected = 2;
                 }
                 else {
@@ -286,8 +285,9 @@ Custom property | Description | Default
                     this.selected = 3;
                 }
             },
-            _handleError: function () {
+            _handleError: function (e, detail) {
                 this.errMessage = 'There has been an error - please try again';
+                this.fire('ajax-form-response', detail.request.xhr);
                 this.selected = 3;
             }
         });
