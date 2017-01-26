@@ -84,6 +84,7 @@ Custom property | Description | Default
                    params='[[_params]]'
                    method="[[method]]"
                    handle-as="json"
+                   headers="[[headers]]"
                    on-response="_handleResponse"
                    on-error="_handleError"
                    debounce-duration="300">
@@ -242,8 +243,8 @@ Custom property | Description | Default
                             this._params[field.name || field.id] = value;
                         }
 
-                        else if (_this.method.toLowerCase() === 'post') {
-                            this._body[field.id || field.id] = value;
+                        else /*if (_this.method.toLowerCase() === 'post' || _this.method.toLowerCase() === 'put')*/ {
+                            this._body[field.name || field.id] = value;
                         }
                     }
                     else {
