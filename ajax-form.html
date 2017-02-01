@@ -239,11 +239,16 @@ Custom property | Description | Default
                             value = field.checked;
                         }
 
-                        if (_this.method.toLowerCase() === 'get') {
+                        var httpMethod = _this.method.toLowerCase();
+                        if (httpMethod === 'get') {
                             this._params[field.name || field.id] = value;
                         }
 
-                        else /*if (_this.method.toLowerCase() === 'post' || _this.method.toLowerCase() === 'put')*/ {
+                        if (httpMethod === 'post'
+                                || httpMethod === 'put'
+                                || httpMethod === 'patch'
+                                || httpMethod === 'delete'
+                        ) {
                             this._body[field.name || field.id] = value;
                         }
                     }
