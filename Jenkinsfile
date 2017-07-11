@@ -18,7 +18,7 @@ pipeline {
     stage('Test'){
             steps{
                 wrap([$class: 'Xvfb', autoDisplayName: true, debug: true, installationName: 'default',
-                parallelBuild: true, timeout: 5000]) {
+                parallelBuild: true, timeout: 3]) {
                   sh 'polymer test'
                 }
             }
